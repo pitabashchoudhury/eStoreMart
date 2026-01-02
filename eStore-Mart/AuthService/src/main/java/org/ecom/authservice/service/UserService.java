@@ -19,18 +19,20 @@ public class UserService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public void createUser(CreateUserRequest request, String createdBy) {
+    public void createUser(CreateUserRequest request
+                          // ,String createdBy
+    ) {
 
-        // 1️⃣ Validate userType
+        // validate userType
         String userType = request.getUserType().toUpperCase();
 
-        // 2️⃣ Prevent duplicate user
+        //  Prevent duplicate user
         if (userRepository.existsByUsernameOrEmail(
                 request.getUsername(), request.getEmail())) {
             throw new RuntimeException("Username or Email already exists");
         }
 
-        // 3️⃣ Fetch user_type.id
+        //  Fetch user_type.id
         Integer userTypeId =
                 userRepository.findUserTypeId(userType);
 
@@ -38,11 +40,11 @@ public class UserService {
             throw new RuntimeException("Invalid user type: " + userType);
         }
 
-        // 4️⃣ Hash password
+        // hash password
         String hashedPassword =
                 passwordEncoder.encode(request.getPassword());
 
-        // 5️⃣ Insert user
+        // Insert user
         userRepository.createUser(
                 request.getUsername(),
                 hashedPassword,
