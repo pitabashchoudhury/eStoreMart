@@ -1,0 +1,55 @@
+server:
+  port: 8083
+  servlet:
+    context-path: /auth
+
+spring:
+  application:
+    name: auth-service
+
+  # ===============================
+  # PostgreSQL (JDBC only)
+  # ===============================
+  datasource:
+    url: jdbc:postgresql://localhost:5432/eStore
+    username: postgres
+    password: postgres
+    driver-class-name: org.postgresql.Driver
+
+  # ===============================
+  # Redis Configuration
+  # ===============================
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      timeout: 60000
+      lettuce:
+        pool:
+          max-active: 8
+          max-idle: 8
+          min-idle: 2
+
+  security:
+    jwt:
+      secret: my-super-secret-key-should-be-very-long
+      expiration: 3600000 # 1 hour
+
+
+# ===============================
+# Connection Pool (HikariCP - default)
+# ===============================
+spring.datasource.hikari:
+  maximum-pool-size: 10
+  minimum-idle: 2
+  idle-timeout: 30000
+  max-lifetime: 1800000
+  connection-timeout: 30000
+
+# ===============================
+# Logging
+# ===============================
+logging:
+  level:
+    org.springframework.jdbc.core.JdbcTemplate: DEBUG
+    org.springframework.jdbc.datasource: DEBUG
