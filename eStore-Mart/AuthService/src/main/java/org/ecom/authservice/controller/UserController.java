@@ -41,7 +41,7 @@ public class UserController {
     @PostMapping(value = "/login-user", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<LoginResponse> loginUser (@RequestBody LoginUserRequest loginUserRequest){
 
-        LoginResponse loginResponse= new LoginResponse("sds","sfas");
+        LoginResponse loginResponse= userService.loginUser(loginUserRequest);
 
         return  ResponseEntity.status(HttpStatusCode.valueOf(200)).body(loginResponse);
     }

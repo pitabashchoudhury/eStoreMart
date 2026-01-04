@@ -32,7 +32,7 @@ spring:
 
   security:
     jwt:
-      secret: my-super-secret-key-should-be-very-long
+      secret: G7kJ9sL2YwE5Zq+FhM3A8C0V1PqR6NXdZK8sQxT=
       expiration: 3600000 # 1 hour
 
 
