@@ -11,7 +11,8 @@ import org.ecom.authservice.model.UserDetail;
 
 public class LoginResponse {
 
-    public String token;
+    public String accessToken;
+    public String refreshToken;
     public UserDetail userDetail;
     public String message;
 

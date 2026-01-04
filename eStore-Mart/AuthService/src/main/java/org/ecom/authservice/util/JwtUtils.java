@@ -50,4 +50,14 @@ public class JwtUtils {
 
 
     }
+
+    public String generateRefreshToken(UserDetail userDetail) {
+        return Jwts.builder()
+                .subject(userDetail.getUserName())
+                .issuedAt(new Date(System.currentTimeMillis()))
+                .expiration(new Date(System.currentTimeMillis() + (7 * 24 * 60 * 60 * 1000))) // 7 days
+                .signWith(getSignInKey())
+                .compact();
+    }
+
 }

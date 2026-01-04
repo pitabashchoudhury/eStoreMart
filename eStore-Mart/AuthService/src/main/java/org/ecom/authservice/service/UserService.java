@@ -19,12 +19,15 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final JwtUtils jwtUtils;
 
+    private final RefreshTokenService refreshTokenService;
+
     @Autowired
     public UserService(UserRepository userRepository,
-                       PasswordEncoder passwordEncoder, JwtUtils jwtUtils) {
+                       PasswordEncoder passwordEncoder, JwtUtils jwtUtils, RefreshTokenService refreshTokenService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtUtils = jwtUtils;
+        this.refreshTokenService = refreshTokenService;
     }
 
     public void createUser(CreateUserRequest request
@@ -80,12 +83,23 @@ public class UserService {
 
             String decodedPassword = passwordEncoder.encode(loginUserRequest.getPassword());
 
-            if (ss.get().getPassword().equals(decodedPassword)) {
+            if (passwordEncoder.matches(loginUserRequest.getPassword(), ss.get().getPassword())) {
 
 
-                String token = jwtUtils.generateJWT(ss.get());
+                String accessToken = jwtUtils.generateJWT(ss.get());
+
+
+                String refreshToken = jwtUtils.generateRefreshToken(ss.get());
+
+                //  Single device enforced here
+                refreshTokenService.storeRefreshToken(
+                        ss.get().getUserName(),
+                        refreshToken
+                );
+
                 return new LoginResponse(
-                        token,
+                        accessToken,
+                        refreshToken,
                         ss.get(),
                         "Login done Successfully!!!"
                 );
