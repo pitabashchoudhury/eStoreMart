@@ -31,7 +31,7 @@ public class UserRepository {
     }
 
     // 🔹 Insert user
-    public void createUser(
+    public Integer createUser(
             String username,
             String passwordHash,
             String email,
@@ -44,7 +44,7 @@ public class UserRepository {
                   VALUES (?, ?, ?, ?, ?)
                 """;
 
-        jdbcTemplate.update(
+        return jdbcTemplate.update(
                 sql,
                 username,
                 passwordHash,

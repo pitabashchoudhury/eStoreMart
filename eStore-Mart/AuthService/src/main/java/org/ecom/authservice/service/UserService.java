@@ -1,6 +1,8 @@
 package org.ecom.authservice.service;
 
+import lombok.extern.slf4j.Slf4j;
 import org.ecom.authservice.dto.CreateUserRequest;
+import org.ecom.authservice.dto.CreateUserResponse;
 import org.ecom.authservice.dto.login.LoginResponse;
 import org.ecom.authservice.dto.login.LoginUserRequest;
 import org.ecom.authservice.model.UserDetail;
@@ -12,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
+@Slf4j
 @Service
 public class UserService {
 
@@ -30,8 +33,8 @@ public class UserService {
         this.refreshTokenService = refreshTokenService;
     }
 
-    public void createUser(CreateUserRequest request
-                           // ,String createdBy
+    public CreateUserResponse createUser(CreateUserRequest request
+                                         // ,String createdBy
     ) {
 
         // validate userType
@@ -56,13 +59,20 @@ public class UserService {
                 passwordEncoder.encode(request.getPassword());
 
         // Insert user
-        userRepository.createUser(
+       Integer success=  userRepository.createUser(
                 request.getUsername(),
                 hashedPassword,
                 request.getEmail(),
                 userTypeId,
                 request.getUsername()
         );
+       CreateUserResponse res= new CreateUserResponse(
+
+       );
+       res.setUserName(request.getUsername());
+       res.setEmail(request.getEmail());
+       res.setMsg("OTP sent successfully to the given email.");
+       return  res;
     }
 
 
@@ -81,22 +91,17 @@ public class UserService {
                 throw new RuntimeException("User not Active");
             }
 
-            String decodedPassword = passwordEncoder.encode(loginUserRequest.getPassword());
-
             if (passwordEncoder.matches(loginUserRequest.getPassword(), ss.get().getPassword())) {
-
-
                 String accessToken = jwtUtils.generateJWT(ss.get());
-
-
                 String refreshToken = jwtUtils.generateRefreshToken(ss.get());
-
                 //  Single device enforced here
                 refreshTokenService.storeRefreshToken(
                         ss.get().getUserName(),
                         refreshToken
                 );
 
+
+                log.info(refreshTokenService.getRefreshToken(ss.get().getUserName()));
                 return new LoginResponse(
                         accessToken,
                         refreshToken,

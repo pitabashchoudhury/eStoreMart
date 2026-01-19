@@ -1,6 +1,7 @@
 package org.ecom.authservice.controller;
 
 import org.ecom.authservice.dto.CreateUserRequest;
+import org.ecom.authservice.dto.CreateUserResponse;
 import org.ecom.authservice.dto.login.LoginResponse;
 import org.ecom.authservice.dto.login.LoginUserRequest;
 import org.ecom.authservice.service.UserService;
@@ -10,6 +11,7 @@ import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 
 @RestController
 @RequestMapping("/users")
@@ -23,27 +25,24 @@ public class UserController {
     }
 
     @PostMapping(value = "/create-user", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> createUser(
-            @RequestBody CreateUserRequest request
-            //,
-            //@RequestHeader(value = "X-User", required = false) String createdBy
+    public ResponseEntity<?> createUser(@RequestBody CreateUserRequest request
+                                        //,
+                                        //@RequestHeader(value = "X-User", required = false) String createdBy
     ) {
-        userService.createUser(
-                request
+        CreateUserResponse res = userService.createUser(request
                 //,createdBy != null ? createdBy : "system"
         );
 
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body("User created successfully");
+        return ResponseEntity.status(HttpStatus.CREATED).body(res);
     }
 
 
     @PostMapping(value = "/login-user", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<LoginResponse> loginUser (@RequestBody LoginUserRequest loginUserRequest){
+    public ResponseEntity<LoginResponse> loginUser(@RequestBody LoginUserRequest loginUserRequest) {
 
-        LoginResponse loginResponse= userService.loginUser(loginUserRequest);
+        LoginResponse loginResponse = userService.loginUser(loginUserRequest);
 
-        return  ResponseEntity.status(HttpStatusCode.valueOf(200)).body(loginResponse);
+        return ResponseEntity.status(HttpStatusCode.valueOf(200)).body(loginResponse);
     }
 }
 
